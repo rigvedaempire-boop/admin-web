@@ -1,0 +1,45 @@
+{
+  "name": "stationery-shop-admin",
+  "version": "1.0.0",
+  "description": "Admin dashboard for Hrigveda",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "axios": "^1.6.2",
+    "socket.io-client": "^4.6.0",
+    "framer-motion": "^10.16.16",
+    "react-hot-toast": "^2.4.1",
+    "react-icons": "^4.12.0",
+    "lottie-react": "^2.4.0",
+    "date-fns": "^2.30.0",
+    "react-map-gl": "^7.1.7",
+    "mapbox-gl": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.7",
+    "tailwindcss": "^3.3.6",
+    "postcss": "^8.4.32",
+    "autoprefixer": "^10.4.16"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

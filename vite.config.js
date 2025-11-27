@@ -7,7 +7,7 @@ export default defineConfig({
     port: 3025,
     proxy: {
       '/api': {
-        target: 'http://localhost:5025',
+        target: 'https://hrigveda.com',
         changeOrigin: true
       }
     }

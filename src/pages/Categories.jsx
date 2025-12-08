@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiPlus, FiEdit, FiTrash2, FiPackage } from 'react-icons/fi';
+import { FiPlus, FiEdit, FiTrash2, FiPackage, FiUpload, FiX } from 'react-icons/fi';
 import toast from 'react-hot-toast';
-import api from '../services/api';
+import api, { uploadAPI } from '../services/api';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -11,8 +11,10 @@ const Categories = () => {
   const [editingCategory, setEditingCategory] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    description: ''
+    description: '',
+    image: ''
   });
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -54,9 +56,43 @@ const Categories = () => {
     setEditingCategory(category);
     setFormData({
       name: category.name,
-      description: category.description || ''
+      description: category.description || '',
+      image: category.image || ''
     });
     setShowForm(true);
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size should be less than 5MB');
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const response = await uploadAPI.uploadImage(file);
+      setFormData({ ...formData, image: response.data.url });
+      toast.success('Image uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData({ ...formData, image: '' });
   };
 
   const handleDelete = async (id, name) => {
@@ -75,7 +111,8 @@ const Categories = () => {
   const resetForm = () => {
     setFormData({
       name: '',
-      description: ''
+      description: '',
+      image: ''
     });
     setEditingCategory(null);
     setShowForm(false);
@@ -137,8 +174,54 @@ const Categories = () => {
               />
             </div>
 
+            {/* Image Upload */}
+            <div>
+              <label className="label">Category Image</label>
+              {formData.image ? (
+                <div className="relative inline-block">
+                  <img
+                    src={formData.image}
+                    alt="Category"
+                    className="w-32 h-32 object-cover rounded-lg border-2 border-gray-200"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                  >
+                    <FiX size={16} />
+                  </button>
+                </div>
+              ) : (
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="category-image-upload"
+                    disabled={uploading}
+                  />
+                  <label
+                    htmlFor="category-image-upload"
+                    className={`flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary-500 transition-colors ${
+                      uploading ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    <FiUpload size={20} />
+                    <span className="text-sm">
+                      {uploading ? 'Uploading...' : 'Click to upload image'}
+                    </span>
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1">
+                    PNG, JPG up to 5MB
+                  </p>
+                </div>
+              )}
+            </div>
+
             <div className="flex gap-2 pt-2">
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary" disabled={uploading}>
                 {editingCategory ? 'Update' : 'Create'} Category
               </button>
               <button type="button" onClick={resetForm} className="btn btn-secondary">
@@ -165,6 +248,16 @@ const Categories = () => {
               transition={{ delay: index * 0.05 }}
               className="card hover:shadow-md transition-shadow"
             >
+              {category.image && (
+                <div className="mb-3">
+                  <img
+                    src={category.image}
+                    alt={category.name}
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                </div>
+              )}
+
               <div className="mb-2">
                 <h3 className="font-semibold text-gray-900">{category.name}</h3>
               </div>

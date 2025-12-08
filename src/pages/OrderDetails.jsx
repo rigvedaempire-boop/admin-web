@@ -38,7 +38,22 @@ const OrderDetails = () => {
       await fetchOrderDetails();
     } catch (error) {
       console.error('Error updating order status:', error);
-      toast.error('Failed to update order status');
+      toast.error(error.response?.data?.message || 'Failed to update order status');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handlePaymentStatusUpdate = async (newStatus) => {
+    try {
+      setUpdating(true);
+      await ordersAPI.updatePaymentStatus(id, newStatus);
+      toast.success('Payment status updated successfully');
+      // Refresh order details
+      await fetchOrderDetails();
+    } catch (error) {
+      console.error('Error updating payment status:', error);
+      toast.error('Failed to update payment status');
     } finally {
       setUpdating(false);
     }
@@ -138,13 +153,12 @@ const OrderDetails = () => {
         </div>
       </div>
 
-      {/* Order Status and Actions */}
+      {/* Payment Status Section */}
       <div className="card">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-lg font-semibold mb-2">Order Status</h2>
+            <h2 className="text-lg font-semibold mb-2">Payment Status</h2>
             <div className="flex items-center gap-3">
-              {getStatusBadge(order.order_status)}
               {getPaymentBadge(order.payment_status)}
             </div>
           </div>
@@ -160,8 +174,65 @@ const OrderDetails = () => {
           </div>
         </div>
 
+        {/* Payment Status Update Actions */}
+        {order.payment_status === 'pending' && (
+          <div className="pt-6 border-t border-gray-200">
+            <h3 className="text-sm font-medium text-gray-700 mb-3">Confirm Payment</h3>
+            <p className="text-sm text-gray-600 mb-3">
+              ⚠️ Payment must be confirmed before you can update order status
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => handlePaymentStatusUpdate('paid')}
+                disabled={updating}
+                className="px-4 py-2 rounded-lg font-medium transition-colors bg-green-600 hover:bg-green-700 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                <FiCheck size={16} />
+                Confirm Payment Received
+              </button>
+              <button
+                onClick={() => handlePaymentStatusUpdate('failed')}
+                disabled={updating}
+                className="px-4 py-2 rounded-lg font-medium transition-colors bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                Mark as Failed
+              </button>
+            </div>
+          </div>
+        )}
+
+        {order.payment_status === 'paid' && (
+          <div className="pt-6 border-t border-gray-200">
+            <p className="text-sm text-green-600 flex items-center gap-2">
+              <FiCheck size={16} />
+              Payment has been confirmed. You can now update the order status below.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Order Status and Actions */}
+      <div className="card">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-lg font-semibold mb-2">Order Status</h2>
+            <div className="flex items-center gap-3">
+              {getStatusBadge(order.order_status)}
+            </div>
+          </div>
+        </div>
+
+        {/* Show warning if payment is not confirmed */}
+        {order.payment_status !== 'paid' && order.order_status !== 'cancelled' && (
+          <div className="pt-6 border-t border-gray-200">
+            <p className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg">
+              ⚠️ Please confirm payment status first before updating order status
+            </p>
+          </div>
+        )}
+
         {/* Status Update Actions */}
-        {availableStatuses.length > 0 && (
+        {availableStatuses.length > 0 && order.payment_status === 'paid' && (
           <div className="pt-6 border-t border-gray-200">
             <h3 className="text-sm font-medium text-gray-700 mb-3">Update Order Status</h3>
             <div className="flex flex-wrap gap-2">
@@ -181,6 +252,21 @@ const OrderDetails = () => {
                 </button>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Allow cancel even if payment is pending */}
+        {order.order_status === 'pending' && order.payment_status === 'pending' && (
+          <div className="pt-6 border-t border-gray-200">
+            <h3 className="text-sm font-medium text-gray-700 mb-3">Order Actions</h3>
+            <button
+              onClick={() => handleStatusUpdate('cancelled')}
+              disabled={updating}
+              className="px-4 py-2 rounded-lg font-medium transition-colors bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              <FiCheck size={16} />
+              Cancel Order
+            </button>
           </div>
         )}
 

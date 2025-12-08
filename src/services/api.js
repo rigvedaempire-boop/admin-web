@@ -56,7 +56,8 @@ export const productsAPI = {
 export const ordersAPI = {
   getAll: (params) => api.get('/admin/orders', { params }),
   getById: (id) => api.get(`/admin/orders/${id}`),
-  updateStatus: (id, status) => api.put(`/admin/orders/${id}/status`, { order_status: status })
+  updateStatus: (id, status) => api.put(`/admin/orders/${id}/status`, { order_status: status }),
+  updatePaymentStatus: (id, status) => api.put(`/admin/orders/${id}/payment-status`, { payment_status: status })
 };
 
 // Upload API

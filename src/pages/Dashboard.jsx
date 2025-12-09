@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiPackage, FiShoppingCart, FiTrendingUp, FiAlertCircle } from 'react-icons/fi';
 import { ordersAPI, productsAPI } from '../services/api';
-import socketService from '../services/socket';
-import toast from 'react-hot-toast';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -18,23 +16,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchDashboardData();
-
-    // Listen for new orders via socket
-    const socket = socketService.connect();
-
-    const handleNewOrder = (data) => {
-      toast.success(`New order received: ${data.order_number}`, {
-        duration: 5010,
-        icon: '🛒'
-      });
-      fetchDashboardData(); // Refresh data
-    };
-
-    socketService.on('order_created', handleNewOrder);
-
-    return () => {
-      socketService.off('order_created', handleNewOrder);
-    };
   }, []);
 
   const fetchDashboardData = async () => {

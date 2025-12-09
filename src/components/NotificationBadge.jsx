@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { notificationsAPI } from '../services/api';
-import socketService from '../services/socket';
 
 const NotificationBadge = () => {
   const [count, setCount] = useState(0);
@@ -8,19 +7,6 @@ const NotificationBadge = () => {
   useEffect(() => {
     // Fetch initial count
     fetchUnreadCount();
-
-    // Connect socket and listen for new orders
-    const socket = socketService.connect();
-
-    const handleNewOrder = () => {
-      setCount(prev => prev + 1);
-    };
-
-    socketService.on('order_created', handleNewOrder);
-
-    return () => {
-      socketService.off('order_created', handleNewOrder);
-    };
   }, []);
 
   const fetchUnreadCount = async () => {

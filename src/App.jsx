@@ -13,6 +13,7 @@ import OrderDetails from './pages/OrderDetails';
 import Notifications from './pages/Notifications';
 import Reviews from './pages/Reviews';
 import XeroxOrders from './pages/XeroxOrders';
+import XeroxPricing from './pages/XeroxPricing';
 
 // Layout
 import Layout from './components/Layout';
@@ -103,6 +104,12 @@ function AppRoutes() {
       <Route path="/xerox-orders" element={
         <ProtectedRoute>
           <XeroxOrders />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/xerox-pricing" element={
+        <ProtectedRoute>
+          <XeroxPricing />
         </ProtectedRoute>
       } />
 

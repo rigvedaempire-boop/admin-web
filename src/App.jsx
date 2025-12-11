@@ -14,6 +14,7 @@ import Notifications from './pages/Notifications';
 import Reviews from './pages/Reviews';
 import XeroxOrders from './pages/XeroxOrders';
 import XeroxPricing from './pages/XeroxPricing';
+import Coupons from './pages/Coupons';
 
 // Layout
 import Layout from './components/Layout';
@@ -110,6 +111,12 @@ function AppRoutes() {
       <Route path="/xerox-pricing" element={
         <ProtectedRoute>
           <XeroxPricing />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/coupons" element={
+        <ProtectedRoute>
+          <Coupons />
         </ProtectedRoute>
       } />
 

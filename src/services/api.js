@@ -79,4 +79,14 @@ export const notificationsAPI = {
   markAsRead: (id) => api.put(`/admin/notifications/${id}/read`)
 };
 
+// Coupons API
+export const couponsAPI = {
+  getAll: () => api.get('/coupons/admin/all'),
+  getById: (id) => api.get(`/coupons/admin/${id}`),
+  create: (data) => api.post('/coupons/admin/create', data),
+  update: (id, data) => api.put(`/coupons/admin/${id}`, data),
+  delete: (id) => api.delete(`/coupons/admin/${id}`),
+  toggleStatus: (id) => api.patch(`/coupons/admin/${id}/toggle`)
+};
+
 export default api;

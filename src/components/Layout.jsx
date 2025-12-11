@@ -12,7 +12,8 @@ import {
   FiStar,
   FiTag,
   FiPrinter,
-  FiDollarSign
+  FiDollarSign,
+  FiGift
 } from 'react-icons/fi';
 import { useAuth } from '../hooks/useAuth';
 import NotificationBadge from './NotificationBadge';
@@ -27,6 +28,7 @@ const Layout = ({ children }) => {
     { name: 'Products', href: '/products', icon: FiPackage },
     { name: 'Categories', href: '/categories', icon: FiTag },
     { name: 'Orders', href: '/orders', icon: FiShoppingCart },
+    { name: 'Coupons', href: '/coupons', icon: FiGift },
     { name: 'Xerox Orders', href: '/xerox-orders', icon: FiPrinter },
     { name: 'Xerox Pricing', href: '/xerox-pricing', icon: FiDollarSign },
     { name: 'Reviews', href: '/reviews', icon: FiStar },
